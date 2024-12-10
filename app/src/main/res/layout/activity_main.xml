@@ -1,32 +1,40 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <!-- Поле ввода текста -->
+    <!-- Поле ввода заголовка -->
     <EditText
-        android:id="@+id/inputField"
-        android:layout_width="378dp"
-        android:layout_height="67dp"
-        android:hint="Введите текст" />
+        android:id="@+id/title_input"
+        android:layout_width="386dp"
+        android:layout_height="63dp"
+        android:hint="Введите заголовок"
+        android:inputType="text" />
 
-    <!-- Кнопка -->
+    <!-- Поле ввода описания -->
+    <EditText
+        android:id="@+id/description_input"
+        android:layout_width="389dp"
+        android:layout_height="70dp"
+        android:hint="Введите описание"
+        android:inputType="text" />
+
+    <!-- Кнопка добавления записи -->
     <Button
-        android:id="@+id/showButton"
-        android:layout_width="wrap_content"
+        android:id="@+id/add_button"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Показать текст" />
+        android:text="Добавить" />
 
-    <!-- Текстовое поле для отображения -->
+    <!-- Текстовое поле для отображения записей -->
     <TextView
-        android:id="@+id/displayText"
+        android:id="@+id/records_view"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:textSize="18sp"
-        android:text="Здесь будет отображаться текст" />
+        android:text="Список записей будет здесь"
+        android:textSize="16sp" />
+
 </LinearLayout>

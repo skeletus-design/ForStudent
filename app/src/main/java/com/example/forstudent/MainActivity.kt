@@ -6,24 +6,54 @@ import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
+
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var storage: RecordStorage
+    private var records = mutableListOf<Record>()
+    private var nextId = 1
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        // Получаем ссылки на элементы интерфейса
-        val inputField: EditText = findViewById(R.id.inputField)
-        val showButton: Button = findViewById(R.id.showButton)
-        val displayText: TextView = findViewById(R.id.displayText)
+        // Инициализация хранилища
+        storage = RecordStorage(this)
+        records = storage.loadRecords()
+        if (records.isNotEmpty()) {
+            nextId = records.maxOf { it.id } + 1
+        }
 
-        // Устанавливаем слушатель для кнопки
-        showButton.setOnClickListener {
-            val userInput = inputField.text.toString()
-            if (userInput.isNotEmpty()) {
-                displayText.text = userInput
-            } else {
-                displayText.text = "Пожалуйста, введите текст!"
+        val titleInput = findViewById<EditText>(R.id.title_input)
+        val descriptionInput = findViewById<EditText>(R.id.description_input)
+        val addButton = findViewById<Button>(R.id.add_button)
+        val recordsView = findViewById<TextView>(R.id.records_view)
+
+        updateRecordsView(recordsView)
+
+        addButton.setOnClickListener {
+            val title = titleInput.text.toString()
+            val description = descriptionInput.text.toString()
+
+            if (title.isNotEmpty() && description.isNotEmpty()) {
+                addRecord(title, description)
+                titleInput.text.clear()
+                descriptionInput.text.clear()
+                updateRecordsView(recordsView)
             }
         }
+    }
+
+    private fun addRecord(title: String, description: String) {
+        val record = Record(nextId++, title, description)
+        records.add(record)
+        storage.saveRecords(records)
+    }
+
+    private fun updateRecordsView(recordsView: TextView) {
+        val text = records.joinToString("\n") { record ->
+            "${record.id}. ${record.title} - ${record.description}"
+        }
+        recordsView.text = text
     }
 }
