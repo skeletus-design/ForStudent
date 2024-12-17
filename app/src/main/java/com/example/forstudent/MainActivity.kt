@@ -5,55 +5,37 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.asLiveData
+import com.example.forstudent.databinding.ActivityMainBinding
 
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var storage: RecordStorage
-    private var records = mutableListOf<Record>()
-    private var nextId = 1
+    lateinit var binding: ActivityMainBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        // Инициализация хранилища
-        storage = RecordStorage(this)
-        records = storage.loadRecords()
-        if (records.isNotEmpty()) {
-            nextId = records.maxOf { it.id } + 1
-        }
-
-        val titleInput = findViewById<EditText>(R.id.title_input)
-        val descriptionInput = findViewById<EditText>(R.id.description_input)
-        val addButton = findViewById<Button>(R.id.add_button)
-        val recordsView = findViewById<TextView>(R.id.records_view)
-
-        updateRecordsView(recordsView)
-
-        addButton.setOnClickListener {
-            val title = titleInput.text.toString()
-            val description = descriptionInput.text.toString()
-
-            if (title.isNotEmpty() && description.isNotEmpty()) {
-                addRecord(title, description)
-                titleInput.text.clear()
-                descriptionInput.text.clear()
-                updateRecordsView(recordsView)
+        val db = MainDb.getDb(this)
+        db.getDao().getAllRecords().asLiveData().observe(this){list->
+            binding.recordsView.text = ""
+            list.forEach{
+                val text = "id: ${it.id} Заголовок: ${it.title} Описание: ${it.description}\n"
+                binding.recordsView.append(text)
             }
         }
-    }
 
-    private fun addRecord(title: String, description: String) {
-        val record = Record(nextId++, title, description)
-        records.add(record)
-        storage.saveRecords(records)
-    }
+        binding.addButton.setOnClickListener {
+            val record = Record(
+                null,
+                binding.titleInput.text.toString(),
+                binding.descriptionInput.text.toString()
+            )
 
-    private fun updateRecordsView(recordsView: TextView) {
-        val text = records.joinToString("\n") { record ->
-            "${record.id}. ${record.title} - ${record.description}"
+            Thread{
+                db.getDao().insertRecord(record)
+            }.start()
         }
-        recordsView.text = text
     }
 }
