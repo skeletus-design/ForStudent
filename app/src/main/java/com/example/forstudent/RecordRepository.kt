@@ -10,6 +10,10 @@ class RecordRepository(private val recordDao: RecordDao) {
         recordDao.insert(record)
     }
 
+    suspend fun update(record: Record) {
+        recordDao.update(record)
+    }
+
     suspend fun deleteAll() {
         recordDao.deleteAll()
     }

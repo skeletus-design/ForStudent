@@ -1,5 +1,7 @@
 package com.example.forstudent
 
+import androidx.room.Update
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
@@ -11,8 +13,11 @@ interface RecordDao {
     suspend fun insert(record: Record)
 
     @Query("SELECT * FROM records")
-    suspend fun getAllRecords(): List<Record>
+    fun getAllRecords(): LiveData<List<Record>>
 
     @Query("DELETE FROM records")
     suspend fun deleteAll()
+
+    @Update
+    suspend fun update(record: Record)
 }
