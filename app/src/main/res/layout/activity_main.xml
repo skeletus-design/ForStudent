@@ -25,8 +25,8 @@
 
     <TextView
         android:id="@+id/records_view"
-        android:layout_width="351dp"
-        android:layout_height="495dp"
+        android:layout_width="365dp"
+        android:layout_height="458dp"
         android:text="Записи будут тут"
         android:textSize="24sp" />
 
